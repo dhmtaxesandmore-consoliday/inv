@@ -58,16 +58,12 @@ const css = `
     margin-bottom: 24px;
   }
 
-  .cg-brand-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 500;
-    letter-spacing: 5px;
-    color: #E5C158;
-    text-transform: uppercase;
-    margin: 0;
-    line-height: 1.2;
-    text-shadow: 0 2px 10px rgba(229,193,88,0.25);
+  .cg-logo-img {
+    height: 68px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 2px;
+    filter: drop-shadow(0 4px 15px rgba(229,193,88,0.15));
   }
 
   .cg-brand-subtitle {
@@ -400,7 +396,7 @@ export default function CoralGablesOpening() {
           {/* HEADER */}
           <div className="cg-header">
             <div className="cg-brand-logo">
-              <h2 className="cg-brand-title">DHM Taxes &amp; More</h2>
+              <img src="/logo-borde-blanco.png" alt="DHM Taxes &amp; More" className="cg-logo-img" />
               <span className="cg-brand-subtitle">Coral Gables Office</span>
             </div>
             <div className="cg-eyebrow">You are cordially invited</div>
