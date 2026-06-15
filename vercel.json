@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/api/stripe",   "destination": "/api/stripe" },
+    { "source": "/api/manychat", "destination": "/api/manychat" },
+    { "source": "/(.*)",         "destination": "/index.html" }
+  ]
+}

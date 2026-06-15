@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-dark: #000;
+  --bg-panel: #1e293b;
+  --border-light: rgba(255, 255, 255, 0.2);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  --color-consoliday: #ea580c;
+  --color-planelite: #2563eb;
+  --color-dhm: #10b981;
+  --color-guppy: #8b5cf6;
+  --color-media: #f43f5e;
+  --color-vault: #ebd025;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  margin: 0; padding: 0;
+  overflow: hidden;
+  user-select: none;
+}
+
+* { box-sizing: border-box; }
+
+/* The Game World Canvas */
+.world-map {
+  background-image: url('/sprites/floor-tile.png');
+  background-repeat: repeat;
+  /* Original sprite might be small, so pixelated rendering keeps it sharp */
+  image-rendering: pixelated;
+  position: relative;
+}
+
+/* Sprites styling */
+.sprite {
+  position: absolute;
+  image-rendering: pixelated;
+  /* Remove drag ghosting */
+  -webkit-user-drag: none;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.clickable:hover {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) brightness(1.2);
+}
+
+/* Floating HUDs / Zone Labels */
+.zone-label {
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+  border: 2px solid;
+  border-radius: 8px;
+  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+  z-index: 100;
+  transform: translate(-50%, -100%);
+  /* pixel font optional, but let's stick to inter for readability like original repo */
+  font-family: 'Inter', sans-serif;
+}
+
+.zone-title {
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.zone-stats {
+  display: flex;
+  gap: 15px;
+  font-size: 0.8rem;
+  color: #ccc;
+  margin-top: 5px;
+}
+.zone-stats span { display: flex; flex-direction: column; align-items: center; }
+.zone-stats strong { color: #fff; font-size: 0.9rem; }
+
+/* Dashboard UI over everything */
+.app-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none; /* Let clicks pass to map */
+  z-index: 1000;
+}
+
+.top-bar {
+  pointer-events: auto;
+  position: absolute;
+  top: 15px; left: 15px; right: 15px;
+  display: flex;
+  justify-content: space-between;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 15px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.controls-hint {
+  pointer-events: auto;
+  position: absolute;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  display: flex;
+  gap: 15px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+  display: flex; justify-content: center; align-items: center; z-index: 2000;
+  animation: fadeIn 0.2s forwards;
+  pointer-events: auto;
+}
+.modal-content {
+  background: var(--bg-panel); border: 1px solid var(--border-light);
+  padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  animation: slideUp 0.2s 0.05s forwards; opacity: 0; color: var(--text-main);
+}
+.vault-modal-content { border-color: #ebd025; }
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
+
+.input-field {
+  width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-light);
+  color: white; border-radius: 8px; margin-top: 10px; margin-bottom: 20px; outline: none; transition: border-color 0.2s;
+}
+.input-field:focus { border-color: currentColor; }
+.btn {
+  padding: 10px 20px; background: currentColor; color: #000; border: none; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+}
+.btn:hover { opacity: 0.9; }
+.btn:active { transform: scale(0.98); }
+.close-btn { background: none; color: var(--text-muted); border: none; padding: 5px; cursor: pointer; }
+.close-btn:hover { color: white; }
+
+.vault-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; border-bottom: 1px solid #ebd025; padding-bottom: 10px;
+}
+.vault-grid {
+  display: grid; grid-template-columns: 1fr; gap: 15px; max-height: 400px; overflow-y: auto; padding-right: 10px;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+/* SVG Fallback Character */
+.svg-char {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.exclamation-bubble {
+  animation: bounce 1s infinite;
+}
+
+/* --- MOBILE RESPONSIVE TWEAKS --- */
+@media (max-width: 768px) {
+  .top-bar {
+    padding: 10px 15px;
+    top: 10px; left: 10px; right: 10px;
+    flex-direction: row;
+    align-items: center;
+  }
+  .top-bar div:first-child {
+    font-size: 1rem !important;
+  }
+  .top-bar div:last-child {
+    font-size: 0.75rem !important;
+  }
+  .controls-hint {
+    bottom: 10px;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    width: 90%;
+    justify-content: center;
+  }
+  .modal-content {
+    padding: 15px !important;
+    width: 95% !important;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .vault-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .vault-header h2 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  .btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  .input-field {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+  .vault-grid {
+    grid-template-columns: 1fr;
+  }
+  .terminal-output { /* Override inline styles if we add this class, or target pre */
+    font-size: 0.75rem !important;
+    padding: 10px !important;
+  }
+  .modal-content > div > pre {
+    font-size: 0.7rem !important;
+    padding: 10px !important;
+  }
+}

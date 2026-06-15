@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { background: #333; color: white; margin: 0; padding: 20px; font-family: sans-serif; }
+  .grid { display: grid; grid-template-columns: repeat(32, 48px); gap: 1px; background: #666; width: max-content; }
+  .tile { width: 48px; height: 48px; position: relative; background-image: url('/assets/TilesHouse.png'); background-size: 1536px 1536px; image-rendering: pixelated; }
+  .coord { position: absolute; pointer-events: none; top: 0; left: 0; font-size: 8px; color: yellow; text-shadow: 1px 1px 0 #000; }
+</style>
+</head>
+<body>
+<h2>Metro City Tiles Viewer</h2>
+<div class="grid" id="grid"></div>
+<script>
+  const grid = document.getElementById('grid');
+  for(let ty=0; ty<32; ty++){ // 512 / 16 = 32
+    for(let tx=0; tx<32; tx++){
+      const div = document.createElement('div');
+      div.className = 'tile';
+      div.style.backgroundPosition = `-${tx * 48}px -${ty * 48}px`; // scale 3x
+      div.innerHTML = `<span class="coord">${tx},${ty}</span>`;
+      grid.appendChild(div);
+    }
+  }
+</script>
+</body>
+</html>
