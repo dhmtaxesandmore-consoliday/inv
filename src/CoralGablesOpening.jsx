@@ -6,6 +6,13 @@ import { Calendar, Clock, MapPin, Sparkles, Check, X, CheckCircle2 } from 'lucid
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap');
 
+  html, body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    user-select: auto !important;
+    height: auto !important;
+  }
+
   .cg-root {
     font-family: 'Outfit', sans-serif;
     background: #040706;
