@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from './lib/supabase';
+import { Calendar, Clock, MapPin, Sparkles, Check, X, CheckCircle2 } from 'lucide-react';
 
 /* ─── INLINE STYLES ─────────────────────────────────────────────────────── */
 const css = `
@@ -151,15 +152,23 @@ const css = `
     padding: 22px 24px;
     border-right: 1px solid rgba(255,255,255,0.05);
     border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   .cg-detail:nth-child(even) { border-right: none; }
   .cg-detail:nth-last-child(-n+2) { border-bottom: none; }
   .cg-detail.full { grid-column: 1 / -1; border-right: none; }
 
-  .cg-det-icon { font-size: 19px; margin-bottom: 7px; display: block; }
+  .cg-det-icon {
+    width: 20px; height: 20px;
+    color: #E5C158;
+    margin-bottom: 9px;
+    stroke-width: 1.5px;
+  }
   .cg-det-lbl {
     font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
-    color: #E5C158; margin-bottom: 4px; font-weight: 500;
+    color: #E5C158; margin-bottom: 6px; font-weight: 500;
   }
   .cg-det-val { font-size: 14px; font-weight: 400; color: #F3EFE9; line-height: 1.45; }
 
@@ -173,13 +182,18 @@ const css = `
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     animation: cg-fadeUp 0.9s ease 0.3s both;
   }
-  .cg-ban-icon {
-    width: 42px; height: 42px;
+  .cg-ban-icon-wrap {
+    width: 40px; height: 40px;
     background: rgba(46,125,80,0.18);
     border: 1px solid rgba(46,125,80,0.38);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 19px; flex-shrink: 0;
+    flex-shrink: 0;
+  }
+  .cg-ban-icon-svg {
+    width: 20px; height: 20px;
+    color: #86EFAC;
+    stroke-width: 1.5px;
   }
   .cg-ban-txt strong { display: block; font-size: 14px; font-weight: 600; color: #86EFAC; margin-bottom: 2px; }
   .cg-ban-txt span { font-size: 12px; color: #8C9F95; line-height: 1.4; }
@@ -224,13 +238,18 @@ const css = `
     background: transparent; color: #8C9F95;
     font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
     cursor: pointer; transition: all 0.22s;
-    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
     letter-spacing: 0.3px;
   }
-  .cg-choice .ci { font-size: 21px; }
+  .cg-choice .ci {
+    width: 20px; height: 20px;
+    stroke-width: 2px;
+  }
   .cg-choice:hover { border-color: rgba(197,160,56,0.4); color: #F3EFE9; background: rgba(197,160,56,0.04); }
   .cg-choice.yes-active { background: rgba(16,44,30,0.5); border-color: rgba(46,125,80,0.5); color: #86EFAC; }
+  .cg-choice.yes-active .ci { color: #86EFAC; }
   .cg-choice.no-active  { background: rgba(60,20,20,0.4); border-color: rgba(150,60,60,0.4); color: #FCA5A5; }
+  .cg-choice.no-active .ci { color: #FCA5A5; }
   .cg-choice.err-shake  { animation: cg-shake 0.4s ease; }
 
   .cg-err-msg { font-size: 11px; color: #FCA5A5; margin-top: 5px; display: none; }
@@ -261,9 +280,14 @@ const css = `
     background: linear-gradient(135deg, #102C1E, #205636);
     border: 2px solid #E5C158; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 34px; margin: 0 auto 22px;
+    margin: 0 auto 22px;
     box-shadow: 0 0 36px rgba(229,193,88,0.22);
     animation: cg-popIn 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) 0.15s both;
+  }
+  .cg-seal-svg {
+    width: 38px; height: 38px;
+    color: #E5C158;
+    stroke-width: 2px;
   }
   .cg-s-eyebrow { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #E5C158; margin-bottom: 9px; }
   .cg-s-title {
@@ -276,10 +300,16 @@ const css = `
     border: 1px solid rgba(46,125,80,0.3); border-radius: 4px; padding: 18px 22px;
     box-shadow: inset 0 1px 10px rgba(0,0,0,0.4);
   }
-  .cg-s-row { display: flex; align-items: center; gap: 11px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06); text-align: left; }
+  .cg-s-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: left; }
   .cg-s-row:last-child { border-bottom: none; padding-bottom: 0; }
   .cg-s-row:first-child { padding-top: 0; }
-  .cg-s-ico { font-size: 15px; flex-shrink: 0; }
+  
+  .cg-s-ico {
+    width: 16px; height: 16px;
+    color: #E5C158;
+    flex-shrink: 0;
+    stroke-width: 1.8px;
+  }
   .cg-s-txt { font-size: 13px; color: #F3EFE9; font-weight: 300; }
   .cg-s-txt strong { font-weight: 600; color: #E5C158; }
 
@@ -336,7 +366,6 @@ export default function CoralGablesOpening() {
 
     setLoading(true);
     try {
-      // Reusing the table rsvp_mortgage_opening since it's already configured in Supabase
       const { error } = await supabase
         .from('rsvp_mortgage_opening')
         .insert([{ full_name: name.trim(), company: company.trim() || null, response: choice }]);
@@ -382,17 +411,17 @@ export default function CoralGablesOpening() {
                 </div>
                 <div className="cg-details">
                   <div className="cg-detail">
-                    <span className="cg-det-icon">📅</span>
+                    <Calendar className="cg-det-icon" />
                     <div className="cg-det-lbl">Date</div>
                     <div className="cg-det-val">Saturday<br />June 20, 2026</div>
                   </div>
                   <div className="cg-detail">
-                    <span className="cg-det-icon">🕔</span>
+                    <Clock className="cg-det-icon" />
                     <div className="cg-det-lbl">Time</div>
                     <div className="cg-det-val">4:00 PM<br />onwards</div>
                   </div>
                   <div className="cg-detail full">
-                    <span className="cg-det-icon">📍</span>
+                    <MapPin className="cg-det-icon" />
                     <div className="cg-det-lbl">Venue</div>
                     <div className="cg-det-val">770 Ponce de Leon Blvd<br />Suite 303, Miami, FL 33134</div>
                   </div>
@@ -401,7 +430,9 @@ export default function CoralGablesOpening() {
 
               {/* VIP ACCESS BANNER */}
               <div className="cg-banner">
-                <div className="cg-ban-icon">✨</div>
+                <div className="cg-ban-icon-wrap">
+                  <Sparkles className="cg-ban-icon-svg" />
+                </div>
                 <div className="cg-ban-txt">
                   <strong>VIP Access Granted</strong>
                   <span>Complimentary cocktails, exclusive networking, and property walkthrough.</span>
@@ -455,17 +486,19 @@ export default function CoralGablesOpening() {
                   <label className="cg-lbl">Your Response</label>
                   <div className="cg-choices">
                     <button
+                      type="button"
                       className={`cg-choice${choice === 'yes' ? ' yes-active' : ''}${choiceErr ? ' err-shake' : ''}`}
                       onClick={() => selectChoice('yes')}
                     >
-                      <span className="ci">✅</span>
+                      <Check className="ci" />
                       Gladly Accept
                     </button>
                     <button
+                      type="button"
                       className={`cg-choice${choice === 'no' ? ' no-active' : ''}${choiceErr ? ' err-shake' : ''}`}
                       onClick={() => selectChoice('no')}
                     >
-                      <span className="ci">🙏</span>
+                      <X className="ci" />
                       Regretfully Decline
                     </button>
                   </div>
@@ -489,7 +522,9 @@ export default function CoralGablesOpening() {
                 <div className="cg-orn-diamond" />
                 <div className="cg-orn-line cg-orn-line-r" />
               </div>
-              <div className="cg-seal">{choice === 'yes' ? '✓' : '♡'}</div>
+              <div className="cg-seal">
+                {choice === 'yes' ? <CheckCircle2 className="cg-seal-svg" /> : <X className="cg-seal-svg" />}
+              </div>
 
               {choice === 'yes' ? (
                 <>
@@ -501,15 +536,15 @@ export default function CoralGablesOpening() {
                   </p>
                   <div className="cg-s-box">
                     <div className="cg-s-row">
-                      <span className="cg-s-ico">📅</span>
+                      <Calendar className="cg-s-ico" />
                       <div className="cg-s-txt">Saturday, <strong>June 20, 2026 · 4:00 PM</strong></div>
                     </div>
                     <div className="cg-s-row">
-                      <span className="cg-s-ico">📍</span>
+                      <MapPin className="cg-s-ico" />
                       <div className="cg-s-txt"><strong>770 Ponce de Leon Blvd, Suite 303, Miami, FL</strong></div>
                     </div>
                     <div className="cg-s-row">
-                      <span className="cg-s-ico">🥂</span>
+                      <Sparkles className="cg-s-ico" />
                       <div className="cg-s-txt">Complimentary cocktails &amp; networking included</div>
                     </div>
                   </div>
