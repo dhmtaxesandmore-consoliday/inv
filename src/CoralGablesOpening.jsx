@@ -416,7 +416,7 @@ export default function CoralGablesOpening() {
                   <div className="cg-detail">
                     <Calendar className="cg-det-icon" />
                     <div className="cg-det-lbl">Date</div>
-                    <div className="cg-det-val">Saturday<br />June 20, 2026</div>
+                    <div className="cg-det-val">Saturday<br />June 27, 2026</div>
                   </div>
                   <div className="cg-detail">
                     <Clock className="cg-det-icon" />
@@ -451,7 +451,7 @@ export default function CoralGablesOpening() {
                     <div className="cg-orn-line cg-orn-line-r" />
                   </div>
                   <div className="cg-rsvp-title">Kindly Confirm Attendance</div>
-                  <p className="cg-rsvp-sub">Please respond by June 18, 2026</p>
+                  <p className="cg-rsvp-sub">Please respond by June 25, 2026</p>
                   <div className="cg-ornament" style={{ marginBottom: 0 }}>
                     <div className="cg-orn-line" />
                     <div className="cg-orn-diamond" />
@@ -540,7 +540,7 @@ export default function CoralGablesOpening() {
                   <div className="cg-s-box">
                     <div className="cg-s-row">
                       <Calendar className="cg-s-ico" />
-                      <div className="cg-s-txt">Saturday, <strong>June 20, 2026 · 4:00 PM</strong></div>
+                      <div className="cg-s-txt">Saturday, <strong>June 27, 2026 · 4:00 PM</strong></div>
                     </div>
                     <div className="cg-s-row">
                       <MapPin className="cg-s-ico" />
